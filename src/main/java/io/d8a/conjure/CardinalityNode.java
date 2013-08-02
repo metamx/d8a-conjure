@@ -3,6 +3,8 @@ package io.d8a.conjure;
 
 import com.google.common.base.Preconditions;
 
+import java.util.LinkedHashMap;
+
 /**
  * A cardinality node is a conjure template node that contains a cardinality, name, and a counter. It
  * generates a different value on each call of getValue().
@@ -34,10 +36,11 @@ public abstract class CardinalityNode<T> implements ConjureTemplateNode{
         return name;
     }
 
-
     @Override
-    public StringBuilder generate(StringBuilder buff){
-        return buff.append(getValue());
+    public LinkedHashMap<String,Object> generateValue(LinkedHashMap<String,Object> map)
+    {
+      map.put(getName(),getValue());
+      return map;
     }
 
     @Override

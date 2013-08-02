@@ -26,23 +26,24 @@ public abstract class NodeList implements ConjureTemplateNode {
         return Collections.unmodifiableList(nodes);
     }
 
+
     @Override
-    public StringBuilder generate(StringBuilder buff) {
-        if(!nodes.isEmpty()){
-            generateNonEmpty(buff);
-            return buff;
-        }
-        if(allowsGenerateOnEmpty){
-            generateEmpty(buff);
-            return buff;
-        }
-        throw new IllegalStateException("Nodes must first be added to "+getClass().getSimpleName()+" before calling generate.");
+    public LinkedHashMap<String,Object> generateValue(LinkedHashMap<String,Object> map) {
+      if(!nodes.isEmpty()){
+        generateNonEmpty(map);
+        return map;
+      }
+      if(allowsGenerateOnEmpty){
+        generateEmpty(map);
+        return map;
+      }
+      throw new IllegalStateException("Nodes must first be added to "+getClass().getSimpleName()+" before calling generate.");
     }
 
-    protected void generateEmpty(StringBuilder buff){
+    protected void generateEmpty(LinkedHashMap<String,Object> map){
     }
 
-    protected abstract void generateNonEmpty(StringBuilder buff);
+    protected abstract void generateNonEmpty(LinkedHashMap<String,Object> map);
 
     public boolean isEmpty() {
         return nodes == null || nodes.isEmpty();

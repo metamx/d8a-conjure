@@ -1,6 +1,7 @@
 package io.d8a.conjure;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -23,17 +24,6 @@ public class ChooseByWeightNodeList extends NodeList{
         add(new WeightedNode(node, weight));
     }
 
-    @Override
-    protected void generateNonEmpty(StringBuilder buff) {
-        updateWeights();
-        int ticket = RAND.nextInt(sumOfWeights);
-        for(int i=0; i< weightTiers.size(); i++){
-            if(ticket < weightTiers.get(i)){
-                nodes.get(i).generate(buff);
-                return;
-            }
-        }
-    }
 
     public int getSumOfWeights() {
         return sumOfWeights;
@@ -79,4 +69,17 @@ public class ChooseByWeightNodeList extends NodeList{
         ConjureTemplateNode node = template.parseNodes(line);
         return new WeightedNode(node, weight);
     }
+
+  @Override
+  public void generateNonEmpty(LinkedHashMap<String, Object> map)
+  {
+    updateWeights();
+    int ticket = RAND.nextInt(sumOfWeights);
+    for(int i=0; i< weightTiers.size(); i++){
+      if(ticket < weightTiers.get(i)){
+        nodes.get(i).generateValue(map);
+        return;
+      }
+    }
+  }
 }

@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 /**
@@ -37,7 +38,17 @@ public class CardinalityNodeList implements ConjureTemplateNode{
         return buff.append(generateEvent().toString());
     }
 
-    /**
+  @Override
+  public LinkedHashMap<String, Object> generateValue(LinkedHashMap<String, Object> map)
+  {
+    for (CardinalityNode node: cardinalityNodes)
+    {
+      node.generateValue(map);
+    }
+    return map;
+  }
+
+  /**
      * calls getValue() on each node in cardinalityNodes to generate an event.
      * @return - a new event composed of the values of each of the nodes in cardinalityNodes
      */

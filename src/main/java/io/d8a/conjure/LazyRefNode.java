@@ -1,5 +1,7 @@
 package io.d8a.conjure;
 
+import java.util.LinkedHashMap;
+
 public class LazyRefNode implements ConjureTemplateNode {
     private String ref;
     private ConjureTemplateNode refNode;
@@ -11,13 +13,13 @@ public class LazyRefNode implements ConjureTemplateNode {
     }
 
     @Override
-    public StringBuilder generate(StringBuilder buff) {
+    public LinkedHashMap<String,Object> generateValue(LinkedHashMap<String,Object> map) {
         if(refNode == null){
             refNode = template.getNode(ref);
             if(refNode == null){
                 throw new IllegalArgumentException("Referenced node '"+ref+"' not found.");
             }
         }
-        return refNode.generate(buff);
+        return refNode.generateValue(map);
     }
 }

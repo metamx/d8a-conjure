@@ -1,5 +1,7 @@
 package io.d8a.conjure;
 
-public interface ConjureTemplateNode {
-    public StringBuilder generate(StringBuilder buff);
+import java.util.LinkedHashMap;
+
+public interface ConjureTemplateNode<T> {
+  public LinkedHashMap<String,Object> generateValue(LinkedHashMap<String,Object> map);
 }

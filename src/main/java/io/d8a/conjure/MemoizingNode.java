@@ -1,11 +1,12 @@
 package io.d8a.conjure;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class MemoizingNode implements ConjureTemplateNode {
     private ConjureTemplateNode targetNode;
     private String name;
-    private Map<String,String> cache;
+    private Map<String,LinkedHashMap<String,Object>> cache;
 
     public MemoizingNode(ConjureTemplateNode targetNode, String name, Map cache) {
         this.targetNode = targetNode;
@@ -14,11 +15,12 @@ public class MemoizingNode implements ConjureTemplateNode {
     }
 
     @Override
-    public StringBuilder generate(StringBuilder buff) {
+    public LinkedHashMap<String,Object> generateValue(LinkedHashMap<String,Object> map) {
         if(!cache.containsKey(name)){
-            cache.put(name, targetNode.generate(new StringBuilder()).toString());
+            cache.put(name, targetNode.generateValue(new LinkedHashMap<String, Object>()));
         }
-        return buff.append(cache.get(name));
+        map.putAll(cache.get(name));
+        return map;
     }
 
     public ConjureTemplateNode getTargetNode() {

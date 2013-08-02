@@ -1,5 +1,6 @@
 package io.d8a.conjure;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,15 +26,15 @@ public class CombineNodeList extends NodeList {
     }
 
     @Override
-    protected void generateNonEmpty(StringBuilder buff){
+    protected void generateNonEmpty(LinkedHashMap<String,Object> map){
         boolean first = true;
         for(ConjureTemplateNode node : nodes){
             if(first){
                 first = false;
             }else{
-                buff.append(separator);
+                map.put("seperator",separator);
             }
-            node.generate(buff);
+            node.generateValue(map);
         }
     }
 

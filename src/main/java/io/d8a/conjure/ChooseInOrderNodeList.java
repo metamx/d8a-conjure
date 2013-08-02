@@ -1,5 +1,6 @@
 package io.d8a.conjure;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -7,11 +8,11 @@ public class ChooseInOrderNodeList extends NodeList {
     private int next = 0;
 
     @Override
-    protected void generateNonEmpty(StringBuilder buff){
+    protected void generateNonEmpty(LinkedHashMap<String,Object> map){
         if(next >= nodes.size()){
             next = 0;
         }
-        nodes.get(next++).generate(buff);
+        nodes.get(next++).generateValue(map);
     }
 
     public static ChooseInOrderNodeList createNode(Map config, ConjureTemplate template) {

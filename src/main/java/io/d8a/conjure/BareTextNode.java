@@ -1,5 +1,7 @@
 package io.d8a.conjure;
 
+import java.util.LinkedHashMap;
+
 public class BareTextNode implements ConjureTemplateNode {
     private String text;
 
@@ -7,13 +9,14 @@ public class BareTextNode implements ConjureTemplateNode {
         this.text = text;
     }
 
-    @Override
-    public StringBuilder generate(StringBuilder buff){
-        buff.append(text);
-        return buff;
-    }
+  @Override
+  public LinkedHashMap<String, Object> generateValue(LinkedHashMap<String, Object> map)
+  {
+    map.put("bareTextNode",text);
+    return map;
+  }
 
-    public String getText(){
+  public String getText(){
         return text;
     }
 }
