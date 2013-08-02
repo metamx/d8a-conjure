@@ -1,5 +1,7 @@
 package io.d8a.conjure;
 
-interface Printer<T>{
-    void print(T message);
+import java.util.LinkedHashMap;
+
+interface Printer{
+    void print(LinkedHashMap<String,Object> event);
 }

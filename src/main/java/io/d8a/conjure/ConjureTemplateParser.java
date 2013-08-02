@@ -36,7 +36,7 @@ public class ConjureTemplateParser{
     public ConjureTemplate jsonParse(String filePath) throws IOException{
         ObjectMapper mapper = new ObjectMapper();
         File file = new File(filePath);
-        CardinalityNodeListBuilder builder = mapper.readValue(file, CardinalityNodeListBuilder.class);
+        NodeListBuilder builder = mapper.readValue(file, NodeListBuilder.class);
         return new ConjureTemplate(clock, builder.withClock(template.getClock()).build());
     }
 

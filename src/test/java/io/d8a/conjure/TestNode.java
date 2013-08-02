@@ -1,5 +1,6 @@
 package io.d8a.conjure;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 class TestNode implements ConjureTemplateNode {
@@ -10,8 +11,9 @@ class TestNode implements ConjureTemplateNode {
     }
 
     @Override
-    public StringBuilder generate(StringBuilder buff) {
-        return buff.append(text);
+    public LinkedHashMap<String,Object> generateValue(LinkedHashMap<String,Object> map) {
+        map.put("test",text);
+        return map;
     }
 
     public static ConjureTemplateNode createNode(final Map config, final ConjureTemplate generator){
@@ -20,9 +22,9 @@ class TestNode implements ConjureTemplateNode {
         }
         return new ConjureTemplateNode(){
             @Override
-            public StringBuilder generate(StringBuilder buff) {
-                generator.getNode((String)config.get("valueRef")).generate(buff);
-                return buff;
+            public LinkedHashMap<String,Object> generateValue(LinkedHashMap<String,Object> map) {
+                generator.getNode((String)config.get("valueRef")).generateValue(map);
+                return map;
             }
         };
     }

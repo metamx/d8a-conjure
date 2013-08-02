@@ -1,5 +1,6 @@
 package io.d8a.conjure;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class MinMaxNode implements ConjureTemplateNode {
@@ -10,8 +11,9 @@ public class MinMaxNode implements ConjureTemplateNode {
     }
 
     @Override
-    public StringBuilder generate(StringBuilder buff) {
-        return buff.append(minmax.nextValue());
+    public LinkedHashMap<String,Object> generateValue(LinkedHashMap<String,Object> map) {
+        map.put("minmax",minmax.nextValue());
+        return map;
     }
 
     public MinMax getMinmax() {

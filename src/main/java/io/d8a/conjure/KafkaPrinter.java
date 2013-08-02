@@ -4,9 +4,10 @@ import kafka.javaapi.producer.Producer;
 import kafka.javaapi.producer.ProducerData;
 import kafka.producer.ProducerConfig;
 
+import java.util.LinkedHashMap;
 import java.util.Properties;
 
-class KafkaPrinter implements Printer<String>{
+class KafkaPrinter implements Printer{
     private final Producer<String, String> producer;
     private final String topic;
 
@@ -20,8 +21,13 @@ class KafkaPrinter implements Printer<String>{
     }
 
     @Override
-    public void print(String message){
-        ProducerData<String, String> data = new ProducerData<String, String>(topic, (String)message);
+    public void print(LinkedHashMap<String,Object> event){
+      StringBuilder builder = new StringBuilder();
+      for (Object value: event.values())
+      {
+         builder.append(value.toString());
+      }
+        ProducerData<String, String> data = new ProducerData<String, String>(topic, builder.toString());
         producer.send(data);
     }
 

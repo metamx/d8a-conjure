@@ -4,6 +4,7 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class TimeNode implements ConjureTemplateNode {
@@ -37,10 +38,11 @@ public class TimeNode implements ConjureTemplateNode {
     }
 
     @Override
-    public StringBuilder generate(StringBuilder buff) {
-        buff.append(format.print(clock.currentTimeMillis()));
-        return buff;
+    public LinkedHashMap<String,Object> generateValue(LinkedHashMap<String,Object> map) {
+        map.put("time",format.print(clock.currentTimeMillis()));
+        return map;
     }
+
 
     public static ConjureTemplateNode createNode(Map config, ConjureTemplate template) {
         String format = (String)config.get("format");

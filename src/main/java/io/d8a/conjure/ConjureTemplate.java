@@ -2,13 +2,18 @@ package io.d8a.conjure;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Maps;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ConjureTemplate {
-    private final Map<String, ConjureTemplateNode> nodes;
-    private final CardinalityNodeList nodeList;
+    private final Map<String,ConjureTemplateNode> nodes;
     private final Map<String, Method> typeRegistry;
     private final Clock clock;
     private String refOpenToken = "${";
@@ -25,23 +30,23 @@ public class ConjureTemplate {
         this(Clock.SYSTEM_CLOCK);
     }
 
-    public ConjureTemplate(Clock clock) {
-        this(clock, new CardinalityNodeList(clock));
-    }
-
-    public ConjureTemplate(Clock clock, CardinalityNodeList nodeList)
+    public ConjureTemplate(Clock clock)
     {
-        this(clock, "${", "}", nodeList);
+      this(clock,new LinkedHashMap<String, ConjureTemplateNode>());
     }
 
-    public ConjureTemplate(Clock clock, String openToken, String closeToken, CardinalityNodeList nodeList) {
+    public ConjureTemplate(Clock clock,  Map<String,ConjureTemplateNode> nodes) {
+        this(clock, "${", "}",nodes);
+    }
+
+
+    public ConjureTemplate(Clock clock, String openToken, String closeToken, Map<String,ConjureTemplateNode> nodes) {
         this.clock = clock;
-        this.nodes = new HashMap<String, ConjureTemplateNode>();
+        this.nodes = nodes;
         this.typeRegistry = new HashMap<String, Method>();
         this.refOpenToken = openToken;
         this.refCloseToken = closeToken;
         this.namedNodeValueCache = new HashMap<String, String>();
-        this.nodeList = nodeList;
     }
 
     public Clock getClock() {
@@ -61,23 +66,13 @@ public class ConjureTemplate {
         return new CombineNodeList(nodes);
     }
 
-    public String conjure(String templateName) {
-        if(nodes.containsKey(templateName)){
-            try{
-                return nodes.get(templateName).generate(new StringBuilder()).toString();
-            }finally{
-                namedNodeValueCache.clear();
-            }
-        }
-        throw new IllegalArgumentException("Node '"+templateName+"' not found in the sample generator.");
-    }
-
-    public String conjure() {
-        return conjure("sample");
-    }
-
-    public Map<String, Object> conjureMapData() {
-        return nodeList.generateEvent();
+    public LinkedHashMap<String,Object> conjure() {
+      LinkedHashMap<String,Object> event = Maps.newLinkedHashMap();
+      for (ConjureTemplateNode node: nodes.values())
+      {
+        node.generateValue(event);
+      }
+      return event;
     }
 
     public ConjureTemplateNode getNode(String name) {

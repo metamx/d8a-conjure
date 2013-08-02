@@ -2,8 +2,9 @@ package io.d8a.conjure;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 
-public class MultiPrinter implements Printer<String>{
+public class MultiPrinter implements Printer{
     private Collection<Printer> printers;
 
     public MultiPrinter(Collection<Printer> printers){
@@ -15,9 +16,9 @@ public class MultiPrinter implements Printer<String>{
     }
 
     @Override
-    public void print(String message){
+    public void print(LinkedHashMap<String,Object> event){
         for(Printer printer : printers){
-            printer.print(message);
+            printer.print(event);
         }
     }
 

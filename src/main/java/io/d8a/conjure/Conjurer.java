@@ -67,7 +67,10 @@ public class Conjurer implements Runnable {
             if(FilenameUtils.getExtension(filePath).equals("json")){
                 this.template = parser.jsonParse(filePath);
             }
-            this.template = parser.parse(new FileInputStream(filePath));
+            else
+            {
+              this.template = parser.parse(new FileInputStream(filePath));
+            }
         }catch (IOException e) {
             throw new IllegalArgumentException("Could not create ConjureTemplate from " + filePath, e);
         }
@@ -214,15 +217,7 @@ public class Conjurer implements Runnable {
             if(Thread.currentThread().isInterrupted()){
                 return;
             }
-            Object event;
-            if(customSchema){
-                event = template.conjureMapData();
-            }else{
-                if(linesIterator == null || !linesIterator.hasNext()){
-                    linesIterator = conjureNextBatch();
-                }
-                event = linesIterator.next();
-            }
+            LinkedHashMap<String,Object> event = template.conjure();
             printer.print(event);
             ++count;
             if(System.currentTimeMillis() - lastReport > 5000){
@@ -234,19 +229,12 @@ public class Conjurer implements Runnable {
 
     }
 
-    private Iterator<String> conjureNextBatch() {
-        String lineVal = template.conjure();
-        String[] conjureList = lineVal.split("\n");
-        return Arrays.asList(conjureList).iterator();
-    }
-
 
     public static Printer nonePrinter() {
-        return new Printer<String>() {
+        return new Printer() {
             @Override
-            public void print(String message) {
+            public void print(LinkedHashMap<String,Object> event) {
             }
-
             public String toString() {
                 return "Blackhole";
             }
@@ -295,7 +283,7 @@ public class Conjurer implements Runnable {
         return new QueuePrinter(queue, waitTime, unit);
     }
 
-    public static Printer<String> consolePrinter() {
+    public static Printer consolePrinter() {
         return new ConsolePrinter();
     }
 

@@ -10,6 +10,11 @@ public abstract class NodeList implements ConjureTemplateNode {
         this(false);
     }
 
+    public NodeList(List<ConjureTemplateNode> nodes)
+    {
+      this.nodes=nodes;
+    }
+
     public NodeList(boolean allowsGenerateOnEmpty){
         this.allowsGenerateOnEmpty = allowsGenerateOnEmpty;
     }
