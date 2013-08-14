@@ -6,6 +6,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.Map;
 import java.util.Random;
 
 import static org.testng.Assert.assertEquals;
@@ -32,17 +33,19 @@ public class DateNodeTypeTest {
         samples.addFragment("sample", "The current time is [${type:\"date\"}].");
 
         long start = System.currentTimeMillis();
-        String text = samples.conjure();
+        Map<String,Object> event = samples.conjure();
         long stop = System.currentTimeMillis();
 
-        long timestamp = parseNumber(text);
+        long timestamp = (Long)event.get("time");
 
         assertInRange(timestamp, start, stop);
     }
 
     public void usesClockFromSampleGenerator(){
         samples.addFragment("sample", "The current time is [${type:\"date\"}].");
-        long timestamp = parseNumber(samples.conjure());
+        Map<String,Object> event = samples.conjure();
+
+        long timestamp = (Long) event.get("time");
         assertEquals(timestamp, randTime);
     }
 
@@ -63,31 +66,41 @@ public class DateNodeTypeTest {
 
     public void allowsDateJitter(){
         samples.addFragment("sample", "The current time is [${type:\"date\",min:10, max:100}].");
-        long value = parseNumber(samples.conjure());
+      Map<String,Object> event = samples.conjure();
+
+      long value = (Long) event.get("time");
         assertInRange(value, randTime + 10, randTime + 100);
     }
 
     public void allowsNegativeLowJitter(){
         samples.addFragment("sample", "The current time is [${type:\"date\",min:-110, max:100}].");
-        long value = parseNumber(samples.conjure());
+      Map<String,Object> event = samples.conjure();
+
+      long value = (Long) event.get("time");
         assertInRange(value, randTime - 110, randTime + 100);
     }
 
     public void allowsNegativeHighJitter(){
         samples.addFragment("sample", "The current time is [${type:\"date\",min:-110, max:-10}].");
-        long value = parseNumber(samples.conjure());
+      Map<String,Object> event = samples.conjure();
+
+      long value = (Long) event.get("time");
         assertInRange(value, randTime - 110, randTime - 10);
     }
 
     public void fixesTransposedLowHigh(){
         samples.addFragment("sample", "The current time is [${type:\"date\",min:100, max:10}].");
-        long value = parseNumber(samples.conjure());
+      Map<String,Object> event = samples.conjure();
+
+      long value = (Long) event.get("time");
         assertInRange(value, randTime + 10, randTime + 100);
     }
 
     public void canHaveSameJitterLowAndHigh(){
         samples.addFragment("sample", "The current time is [${type:\"date\",min:100, max:100}].");
-        long value = parseNumber(samples.conjure());
+      Map<String,Object> event = samples.conjure();
+
+      long value = (Long) event.get("time");
         assertEquals(value, randTime + 100);
     }
 
@@ -95,7 +108,9 @@ public class DateNodeTypeTest {
         samples.addNodeType("minmax",MinMaxNode.class);
         samples.addFragment("sample", "The current time is [${type:\"date\",minmaxRef:\"jitter\"}].");
         samples.addFragment("jitter", "${type:\"minmax\",min:200,max:200}");
-        long value = parseNumber(samples.conjure());
+      Map<String,Object> event = samples.conjure();
+
+      long value = (Long) event.get("time");
         assertEquals(value, randTime + 200);
     }
 

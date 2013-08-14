@@ -22,7 +22,8 @@ public class MinMaxNodeTypeTest {
 
     public void generatesNumberBetweenMinMax(){
         samples.addFragment("sample", "The current temp is [${type:\"minmax\",min:10, max:20}].");
-        long value = parseNumber(samples.conjure());
+
+        long value = (Long)samples.conjure().get("minmax");
         assertInRange(value, 10, 100);
     }
 
@@ -36,7 +37,7 @@ public class MinMaxNodeTypeTest {
         HashSet<Long> values = new HashSet<Long>(count);
         int attempts = 0;
         while(values.size() < count && attempts < count * 1000){
-            long value = parseNumber(samples.conjure());
+          long value = (Long)samples.conjure().get("minmax");
             values.add(value);
             ++attempts;
         }
@@ -49,25 +50,25 @@ public class MinMaxNodeTypeTest {
 
     public void allowsNegativeForMin(){
         samples.addFragment("sample", "The current temp is [${type:\"minmax\",min:-110, max:100}].");
-        long value = parseNumber(samples.conjure());
+      long value = (Long)samples.conjure().get("minmax");
         assertInRange(value, -110, 100);
     }
 
     public void allowsNegativeForMax(){
         samples.addFragment("sample", "The current temp is [${type:\"minmax\",min:-110, max:-10}].");
-        long value = parseNumber(samples.conjure());
+      long value = (Long)samples.conjure().get("minmax");
         assertInRange(value, -110, -10);
     }
 
     public void fixesTransposedMinMax(){
         samples.addFragment("sample", "The current temp is [${type:\"minmax\",min:100, max:10}].");
-        long value = parseNumber(samples.conjure());
+      long value = (Long)samples.conjure().get("minmax");
         assertInRange(value, 10, 100);
     }
 
     public void canHaveSameMinAndMax(){
         samples.addFragment("sample", "The current temp is [${type:\"minmax\",min:100, max:100}].");
-        long value = parseNumber(samples.conjure());
+      long value = (Long)samples.conjure().get("minmax");
         assertEquals(value, 100);
     }
 
@@ -76,7 +77,7 @@ public class MinMaxNodeTypeTest {
         config.put("min", 1);
         config.put("max", 100);
         MinMaxNode minmax = MinMaxNode.createNode(config);
-        int value = new Integer(minmax.generate(new StringBuilder()).toString());
+        int value = new Integer((int)minmax.getMinmax().nextValue());
         assertTrue(value >= 1 && value <= 100);
     }
 
